@@ -75,7 +75,7 @@ module "emr-kafka" {
 
 作者
 -------
-Created and maintained by He Guimin(@xiaozhu36, heguimin36@163.com) and Qi yinfei(@yfqi, qiyf_shadow@yeah.net)
+Created and maintained by Alibaba Cloud Terraform Team(terraform@alibabacloud.com).
 
 许可
 ----
