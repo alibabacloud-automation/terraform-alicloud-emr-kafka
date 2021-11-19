@@ -1,6 +1,6 @@
 Alibaba Cloud E-MapReduce Terraform Module  
 terraform-alicloud-emr-kafka
-=====================================================================
+--------------------
 
 English | [简体中文](https://github.com/terraform-alicloud-modules/terraform-alicloud-emr-kafka/blob/master/README-CN.md)
 
@@ -10,9 +10,6 @@ These types of resources are supported:
 
 * [Alicloud_emr_cluster](https://www.terraform.io/docs/providers/alicloud/r/emr_cluster.html)
 
-# Terraform versions
-
-This module requires Terraform 0.12 和 阿里云 Provider 1.71.0+.
 
 Usage
 -----
@@ -37,17 +34,12 @@ data "alicloud_vswitches" "all" {
 
 module "security_group" {
   source  = "alibaba/security-group/alicloud"
-  region  = "cn-hangzhou"
-  profile = "Your-Profile-Name"
   vpc_id  = data.alicloud_vpcs.default.ids.0
   version = "~> 2.0"
 }
 
 module "emr-kafka" {
   source = "terraform-alicloud-modules/emr-kafka/alicloud"
-
-  region  = "cn-hangzhou"
-  profile = "Your-Profile-Name"
 
   emr_version = data.alicloud_emr_main_versions.default.main_versions.0.emr_version
   charge_type = "PostPaid"
@@ -68,8 +60,69 @@ module "emr-kafka" {
 
 ## Notes
 
-* This module using AccessKey and SecretKey are from `profile` and `shared_credentials_file`.
-If you have not set them yet, please install [aliyun-cli](https://github.com/aliyun/aliyun-cli#installation) and configure it.
+From the version v1.1.0, the module has removed the following `provider` setting:
+
+```hcl
+provider "alicloud" {
+  profile                 = var.profile != "" ? var.profile : null
+  shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
+  region                  = var.region != "" ? var.region : null
+  skip_region_validation  = var.skip_region_validation
+  configuration_source    = "terraform-alicloud-modules/emr-kafka"
+}
+```
+
+If you still want to use the `provider` setting to apply this module, you can specify a supported version, like 1.0.0:
+
+```hcl
+module "emr-kafka" {
+  source  = "terraform-alicloud-modules/emr-kafka/alicloud"
+  version     = "1.0.0"
+  region      = "cn-hangzhou"
+  profile     = "Your-Profile-Name"
+  charge_type = "PostPaid"
+  high_availability_enable = true
+  // ...
+}
+```
+
+If you want to upgrade the module to 1.1.0 or higher in-place, you can define a provider which same region with
+previous region:
+
+```hcl
+provider "alicloud" {
+  region  = "cn-hangzhou"
+  profile = "Your-Profile-Name"
+}
+module "emr-kafka" {
+  source  = "terraform-alicloud-modules/emr-kafka/alicloud"
+  charge_type = "PostPaid"
+  high_availability_enable = true
+  // ...
+}
+```
+or specify an alias provider with a defined region to the module using `providers`:
+
+```hcl
+provider "alicloud" {
+  region  = "cn-hangzhou"
+  profile = "Your-Profile-Name"
+  alias   = "hz"
+}
+module "emr-kafka" {
+  source  = "terraform-alicloud-modules/emr-kafka/alicloud"
+  providers = {
+    alicloud = alicloud.hz
+  }
+  charge_type = "PostPaid"
+  high_availability_enable = true
+  // ...
+}
+```
+
+and then run `terraform init` and `terraform apply` to make the defined provider effect to the existing module state.
+
+More details see [How to use provider in the module](https://www.terraform.io/docs/language/modules/develop/providers.html#passing-providers-explicitly)
 
 Submit Issues
 -------------
