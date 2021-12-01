@@ -6,28 +6,20 @@ provider "alicloud" {
   configuration_source    = "terraform-alicloud-modules/emr-kafka"
 }
 
-data "alicloud_emr_instance_types" "default" {
-  destination_resource  = "InstanceType"
-  cluster_type          = "KAFKA"
-  support_local_storage = var.support_local_storage
-  instance_charge_type  = var.charge_type
-  support_node_type     = ["MASTER", "CORE", "TASK", "GATEWAY"]
-}
-
 data "alicloud_emr_disk_types" "data_disk" {
   destination_resource = "DataDisk"
   cluster_type         = "KAFKA"
   instance_charge_type = var.charge_type
-  instance_type        = data.alicloud_emr_instance_types.default.types.0.id
-  zone_id              = var.zone_id == "" ? data.alicloud_emr_instance_types.default.types.0.zone_id : var.zone_id
+  instance_type        = var.instance_type
+  zone_id              = var.zone_id
 }
 
 data "alicloud_emr_disk_types" "system_disk" {
   destination_resource = "SystemDisk"
   cluster_type         = "KAFKA"
   instance_charge_type = var.charge_type
-  instance_type        = data.alicloud_emr_instance_types.default.types.0.id
-  zone_id              = var.zone_id == "" ? data.alicloud_emr_instance_types.default.types.0.zone_id : var.zone_id
+  instance_type        = var.instance_type
+  zone_id              = var.zone_id
 }
 
 resource "random_uuid" "this" {}
@@ -64,7 +56,7 @@ resource "alicloud_emr_cluster" "this" {
   emr_ver      = var.emr_version
   cluster_type = "KAFKA"
 
-  zone_id           = var.zone_id == "" ? data.alicloud_emr_instance_types.default.types.0.zone_id : var.zone_id
+  zone_id           = var.zone_id
   security_group_id = var.security_group_id
   vswitch_id        = var.vswitch_id
 
@@ -82,7 +74,7 @@ resource "alicloud_emr_cluster" "this" {
       host_group_type   = lookup(host_group.value, "host_group_type", null)
       node_count        = lookup(host_group.value, "node_count", null)
       disk_count        = lookup(host_group.value, "disk_count", null)
-      instance_type     = lookup(host_group.value, "instance_type", var.instance_type != "" ? var.instance_type : data.alicloud_emr_instance_types.default.types.0.id)
+      instance_type     = lookup(host_group.value, "instance_type", var.instance_type  )
       disk_type         = lookup(host_group.value, "disk_type", var.disk_type != "" ? var.disk_type : data.alicloud_emr_disk_types.data_disk.types.0.value)
       disk_capacity     = lookup(host_group.value, "disk_capacity", var.disk_capacity != 0 ? var.disk_capacity : (data.alicloud_emr_disk_types.data_disk.types.0.min > 160 ? data.alicloud_emr_disk_types.data_disk.types.0.min : 160))
       sys_disk_type     = lookup(host_group.value, "sys_disk_type", var.system_disk_type != "" ? var.system_disk_type : data.alicloud_emr_disk_types.system_disk.types.0.value)
