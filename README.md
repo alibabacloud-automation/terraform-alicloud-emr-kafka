@@ -132,7 +132,7 @@ If you have any problems when using this module, please opening a [provider issu
 
 Authors
 -------
-Created and maintained by He Guimin(@xiaozhu36, heguimin36@163.com) and Qi yinfei(@yfqi, qiyf_shadow@yeah.net)
+Created and maintained by Alibaba Cloud Terraform Team(terraform@alibabacloud.com)
 
 License
 ----
