@@ -1,9 +1,3 @@
-variable "create" {
-  description = "The switch to control creation of the emr cluster or not."
-  type        = bool
-  default     = false
-}
-
 variable "region" {
   description = "(Deprecated from version 1.1.0) The region used to launch this module resources."
   type        = string
@@ -28,10 +22,18 @@ variable "skip_region_validation" {
   default     = false
 }
 
-variable "emr_cluster_name" {
-  description = "The name of this new created emr cluster instance."
-  type        = string
-  default     = "terraform-test-kafka-module"
+#alicloud_emr_instance_types
+variable "support_local_storage" {
+  description = "Whether to support local storage."
+  type        = bool
+  default     = false
+}
+
+#alicloud_ram_role
+variable "create" {
+  description = "The switch to control creation of the emr cluster or not."
+  type        = bool
+  default     = false
 }
 
 variable "ram_role_name" {
@@ -40,19 +42,39 @@ variable "ram_role_name" {
   default     = ""
 }
 
-variable "support_local_storage" {
-  description = "Whether to support local storage."
-  type        = bool
-  default     = false
-}
-variable "zone_id" {
-  description = "The zone id used to created emr cluster."
+variable "document" {
+  description = "Authorization strategy of the RAM role."
   type        = string
   default     = ""
 }
 
-variable "vswitch_id" {
-  description = "The vswitch id used to created emr cluster."
+variable "ram_role_description" {
+  description = "The specification of module ram role description."
+  type        = string
+  default     = ""
+}
+
+variable "force" {
+  description = "This parameter is used for resource destroy"
+  type        = bool
+  default     = false
+}
+
+#alicloud_emr_cluster
+variable "emr_cluster_name" {
+  description = "The name of this new created emr cluster instance."
+  type        = string
+  default     = ""
+}
+
+variable "emr_version" {
+  description = "The version of this new created emr kafka cluster."
+  type        = string
+  default     = "EMR-3.24.0"
+}
+
+variable "zone_id" {
+  description = "The zone id used to created emr cluster."
   type        = string
   default     = ""
 }
@@ -63,20 +85,14 @@ variable "security_group_id" {
   default     = ""
 }
 
-variable "charge_type" {
-  description = "The instance charge type. Valid values: Prepaid and PostPaid. Default to PostPaid."
+variable "vswitch_id" {
+  description = "The vswitch id used to created emr cluster."
   type        = string
-  default     = "PostPaid"
+  default     = ""
 }
 
 variable "high_availability_enable" {
   description = "The high availability of this emr cluster is enable or not."
-  type        = bool
-  default     = true
-}
-
-variable "is_open_public_ip" {
-  description = "The emr cluster ecs instance is open public ip or not."
   type        = bool
   default     = true
 }
@@ -90,7 +106,25 @@ variable "ssh_enable" {
 variable "master_pwd" {
   description = "The master password of this new created emr cluster."
   type        = string
-  default     = "YourPassword123!"
+  default     = ""
+}
+
+variable "charge_type" {
+  description = "The instance charge type. Valid values: Prepaid and PostPaid. Default to PostPaid."
+  type        = string
+  default     = "PostPaid"
+}
+
+variable "is_open_public_ip" {
+  description = "The emr cluster ecs instance is open public ip or not."
+  type        = bool
+  default     = true
+}
+
+variable "host_groups" {
+  description = "Host groups to attach to the emr cluster instance."
+  type        = list(map(string))
+  default     = []
 }
 
 variable "instance_type" {
@@ -122,35 +156,3 @@ variable "system_disk_capacity" {
   type        = number
   default     = 0
 }
-
-variable "emr_version" {
-  description = "The version of this new created emr kafka cluster."
-  type        = string
-  default     = "EMR-3.24.0"
-}
-
-variable "host_groups" {
-  description = "Host groups to attach to the emr cluster instance."
-  type        = list(map(string))
-  default = [
-    {
-      host_group_name = "master_group"
-      host_group_type = "MASTER"
-      node_count      = "2"
-      disk_count      = "1"
-    },
-    {
-      host_group_name = "core_group"
-      host_group_type = "CORE"
-      node_count      = "3"
-      disk_count      = "4"
-    },
-    {
-      host_group_name = "task_group"
-      host_group_type = "TASK"
-      node_count      = "1"
-      disk_count      = "4"
-    }
-  ]
-}
-

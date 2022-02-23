@@ -28,25 +28,9 @@ resource "alicloud_ram_role" "default" {
   count = var.create ? 1 : 0
 
   name        = var.ram_role_name == "" ? substr("tf-ram-role-for-kafka-${replace(random_uuid.this.result, "-", "")}", 0, 32) : var.ram_role_name
-  document    = <<EOF
-    {
-        "Statement": [
-        {
-            "Action": "sts:AssumeRole",
-            "Effect": "Allow",
-            "Principal": {
-            "Service": [
-                "emr.aliyuncs.com",
-                "ecs.aliyuncs.com"
-            ]
-            }
-        }
-        ],
-        "Version": "1"
-    }
-    EOF
-  description = "The ram role used to create a emr cluster"
-  force       = true
+  document    = var.document
+  description = var.ram_role_description
+  force       = var.force
 }
 
 resource "alicloud_emr_cluster" "this" {
