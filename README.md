@@ -1,3 +1,9 @@
+# Deprecated
+
+Thank you for your interest in Alibaba Cloud Terraform Module. Due to the [deprecation of alicloud_emr_cluster](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/emr_cluster), this Module will be out of maintenance as of today and will be officially taken offline in the future. More available Modules can be searched in [Alibaba Cloud Terraform Module](https://registry.terraform.io/browse/modules?provider=alibaba).
+
+Thank you again for your understanding and cooperation.
+
 Alibaba Cloud E-MapReduce Terraform Module  
 terraform-alicloud-emr-kafka
 --------------------
