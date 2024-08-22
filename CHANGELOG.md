@@ -1,4 +1,7 @@
-## 1.2.0 (Unreleased)
+## 1.2.0 (August 22, 2024)
+
+- deprecate [GH-7](https://github.com/alibabacloud-automation/terraform-alicloud-emr-kafka/pull/7)
+
 ## 1.1.0 (November 19, 2021)
 
 IMPROVEMENTS:
